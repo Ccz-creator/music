@@ -1,21 +1,33 @@
 <template>
-<div id="my-list" :class="$style.container" @click="handleContainerClick" v-if="isInitedList">
-  <MyLists :list-id="listId" @show-menu="$refs.musicList.handleMenuClick()" ref="lists" />
-  <MusicList :list-id="listId" @show-menu="$refs.lists.hideListsMenu()" ref="musicList" />
-</div>
-
+  <div
+    id="my-list"
+    :class="$style.container"
+    @click="handleContainerClick"
+    v-if="isInitedList"
+  >
+    <MyLists
+      :list-id="listId"
+      @show-menu="$refs.musicList.handleMenuClick()"
+      ref="lists"
+    />
+    <MusicList
+      :list-id="listId"
+      @show-menu="$refs.lists.hideListsMenu()"
+      ref="musicList"
+    />
+  </div>
 </template>
 
 <script>
-import { getListPrevSelectId } from '@renderer/utils/data'
-import { isInitedList, defaultList } from '@renderer/core/share/list'
-import { getList } from '@renderer/core/share/utils'
+import { getListPrevSelectId } from "@renderer/utils/data";
+import { isInitedList, defaultList } from "@renderer/core/share/list";
+import { getList } from "@renderer/core/share/utils";
 
-import MyLists from './components/MyLists'
-import MusicList from './components/MusicList'
+import MyLists from "./components/MyLists";
+import MusicList from "./components/MusicList";
 
 export default {
-  name: 'List',
+  name: "List",
   components: {
     MyLists,
     MusicList,
@@ -23,54 +35,54 @@ export default {
   setup() {
     return {
       isInitedList,
-    }
+    };
   },
   data() {
     return {
       listId: null,
-      focusTarget: 'listDetail',
-    }
+      focusTarget: "listDetail",
+    };
   },
   beforeRouteEnter(to, from) {
-    let id = to.query.id
+    let id = to.query.id;
     if (!id) {
-      id = getListPrevSelectId() || defaultList.id
+      id = getListPrevSelectId() || defaultList.id;
       return {
-        path: '/list',
+        path: "/list",
         query: { id },
-      }
+      };
     }
   },
   beforeRouteUpdate(to, from) {
     // console.log(to, from)
-    if (to.query.updated) return
-    let id = to.query.id
-    if (id == null) return
+    if (to.query.updated) return;
+    let id = to.query.id;
+    if (id == null) return;
     if (!getList(id)) {
-      id = defaultList.id
+      id = defaultList.id;
     }
-    this.listId = id
-    const scrollIndex = to.query.scrollIndex
-    const isAnimation = from.query.id == to.query.id
+    this.listId = id;
+    const scrollIndex = to.query.scrollIndex;
+    const isAnimation = from.query.id == to.query.id;
     this.$nextTick(() => {
-      this.$refs.musicList?.restoreScroll(scrollIndex, isAnimation)
-    })
+      this.$refs.musicList?.restoreScroll(scrollIndex, isAnimation);
+    });
     return {
-      path: '/list',
+      path: "/list",
       query: { id, updated: true },
-    }
+    };
   },
   beforeRouteLeave(to, from) {
-    this.$refs.musicList?.saveListPosition()
+    this.$refs.musicList?.saveListPosition();
   },
   created() {
-    this.listId = this.$route.query.id
+    this.listId = this.$route.query.id;
   },
-}
+};
 </script>
 
 <style lang="less" module>
-@import '@renderer/assets/styles/layout.less';
+@import "@renderer/assets/styles/layout.less";
 
 .container {
   overflow: hidden;
@@ -118,7 +130,7 @@ export default {
     vertical-align: bottom;
   }
   &:active {
-    opacity: .7 !important;
+    opacity: 0.7 !important;
   }
 }
 .listsContent {
@@ -130,7 +142,7 @@ export default {
 }
 .listsItem {
   position: relative;
-  transition: .3s ease;
+  transition: 0.3s ease;
   transition-property: color, background-color, opacity;
   background-color: transparent;
   &:hover:not(.active) {
@@ -148,7 +160,7 @@ export default {
     background-color: @color-theme_2-hover;
   }
   &.fetching {
-    opacity: .5;
+    opacity: 0.5;
   }
   &.editing {
     padding: 0 10px;
@@ -254,14 +266,14 @@ export default {
 .labelSource {
   color: @color-theme;
   padding: 5px;
-  font-size: .8em;
+  font-size: 0.8em;
   line-height: 1;
-  opacity: .75;
+  opacity: 0.75;
   display: inline-block;
 }
 
 .disabled {
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .no-item {
@@ -324,6 +336,5 @@ each(@themes, {
       }
     }
   }
-})
-
+});
 </style>
